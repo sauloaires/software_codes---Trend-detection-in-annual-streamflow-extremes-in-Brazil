@@ -23,16 +23,16 @@ Follow these steps
 5. Select “File System” option and click next
 
 
-![File System](https://github.com/sauloaires/software_codes-Trend-detection-in-annual-streamflow-extremes-in-Brazil/tree/main/ReadmeImages/Trend-Java-Img-2.png "File System")
+![File System](https://github.com/sauloaires/software_codes-Trend-detection-in-annual-streamflow-extremes-in-Brazil/tree/main/ReadmeImages/Trend-Java-Img-2.PNG "File System")
 
 
 6. Select the root directory option and browse for the extracted code, an example illustration is shown below. Click Finish
 
-  ![Import Projects](https://github.com/sauloaires/software_codes-Trend-detection-in-annual-streamflow-extremes-in-Brazil/tree/main/ReadmeImages/Trend-Java-Img-3.png "Import Projects")
+  ![Import Projects](https://github.com/sauloaires/software_codes-Trend-detection-in-annual-streamflow-extremes-in-Brazil/tree/main/ReadmeImages/Trend-Java-Img-3.PNG "Import Projects")
 
 7. The code along with the project should appear as below in the eclipse IDE
 
-  ![Code in IDE](https://github.com/sauloaires/software_codes-Trend-detection-in-annual-streamflow-extremes-in-Brazil/tree/main/ReadmeImages/Trend-Java-Img-4.png "Code in IDE")
+  ![Code in IDE](https://github.com/sauloaires/software_codes-Trend-detection-in-annual-streamflow-extremes-in-Brazil/tree/main/ReadmeImages/Trend-Java-Img-4.PNG "Code in IDE")
 
 
 8. Eclipse should now build the project with no errors.
@@ -40,4 +40,4 @@ Follow these steps
 
 9. To run the sample right click on the file MainTrendDetectionStreamflowBrazil_Workbench.java, select Debug-As, and select Java Application. The graphical user interface like the image below should appear.
 
-![GUI TrendDetectionStreamflowBrazil](https://github.com/sauloaires/software_codes-Trend-detection-in-annual-streamflow-extremes-in-Brazil/tree/main/ReadmeImages/Trend-Java-Img-5.png "GUI TrendDetectionStreamflowBrazil")
+![GUI TrendDetectionStreamflowBrazil](https://github.com/sauloaires/software_codes-Trend-detection-in-annual-streamflow-extremes-in-Brazil/tree/main/ReadmeImages/Trend-Java-Img-5.PNG "GUI TrendDetectionStreamflowBrazil")
