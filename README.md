@@ -13,13 +13,18 @@ Follow these steps
 
 4. Open the eclipse IDE and click on File->Import
 
- ![File Import Menu](https://github.com/sauloaires/software_codes-Trend-detection-in-annual-streamflow-extremes-in-Brazil/tree/main/ReadmeImages/Trend-Java-Img-1.png "File Import Menu")
+![File Import Menu](https://github.com/sauloaires/software_codes-Trend-detection-in-annual-streamflow-extremes-in-Brazil/tree/main/ReadmeImages/Trend-Java-Img-1.png "File Import Menu")
+
+
 5. Select “Existing Projects into Workspace” option and click next
 
   ![Existing Projects into Workspace](https://github.com/sauloaires/software_codes-Trend-detection-in-annual-streamflow-extremes-in-Brazil/tree/main/ReadmeImages/CREST-Java-Img-2.png "Existing Projects into Workspace")
+
+
 6. Select the root directory option and browse for the extracted code, an example illustration is shown below. Click Finish
 
   ![Import Projects](https://github.com/sauloaires/software_codes-Trend-detection-in-annual-streamflow-extremes-in-Brazil/tree/main/ReadmeImages/CREST-Java-Img-3.png "Import Projects")
+
 7. The code along with the project should appear as below in the eclipse IDE
 
   ![Code in IDE](https://github.com/sauloaires/software_codes-Trend-detection-in-annual-streamflow-extremes-in-Brazil/tree/main/ReadmeImages/CREST-Java-Img-4.png "Code in IDE")
