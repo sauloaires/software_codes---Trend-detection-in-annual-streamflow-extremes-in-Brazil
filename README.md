@@ -10,7 +10,7 @@ Follow these steps
 4. If JDK is not installed, download & install latest jdk from http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 5. Open the eclipse IDE and click on File->Import
 
- ![File Import Menu](https://github.com/sauloaires/software_codes-Trend-detection-in-annual-streamflow-extremes-in-Brazil/main/ReadmeImages/Trend-Java-Img-1.png "File Import Menu")
+ ![File Import Menu](https://github.com/sauloaires/software_codes-Trend-detection-in-annual-streamflow-extremes-in-Brazil/tree/main/ReadmeImages/Trend-Java-Img-1.png "File Import Menu")
 6. Select “Existing Projects into Workspace” option and click next
 
   ![Existing Projects into Workspace](https://github.com/sauloaires/software_codes-Trend-detection-in-annual-streamflow-extremes-in-Brazil/tree/main/ReadmeImages/CREST-Java-Img-2.png "Existing Projects into Workspace")
