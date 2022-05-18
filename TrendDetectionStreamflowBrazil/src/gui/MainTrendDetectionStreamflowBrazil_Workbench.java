@@ -24,6 +24,8 @@ public class MainTrendDetectionStreamflowBrazil_Workbench {
 		simulationData.setConsiderarAutoCorrelacao(true);
 		simulationData.setFazerFDR(true);
 		simulationData.setFazerFDRClassico(true);
+		simulationData.setTipoEstatisticaSelecionadaEstacionaridade("Annual Streamflow (m³/s)");
+		
 		
 		final PanelTrendDetectionStreamflowBrazil panelSimulaExtremosUNB = new PanelTrendDetectionStreamflowBrazil(simulationData);
 		panelSimulaExtremosUNB.setVisible(true);

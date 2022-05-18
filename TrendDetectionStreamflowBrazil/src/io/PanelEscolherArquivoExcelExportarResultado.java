@@ -125,16 +125,16 @@ private static final long serialVersionUID = 1L;
 	private void formatButtonGroup() {
 		JPanel panel = new JPanel();
 		panel.setBounds(10, 10, 265, 260);
-		JLabel label = new JLabel("Escolha uma da opções:");
+		JLabel label = new JLabel("Choose one of the options:");
 		panel.add(label);	
 		panel.setLayout(new GridLayout(0, 1));
 		this.cboxButtonGroup = new ButtonGroup();
 		//button1 = new JRadioButton("DAT - Máximos");
 		String nomeEstat=this.simulationData.getTipoEstatisticaSelecionadaEstacionaridade();
-		button1 = new JRadioButton("Resultado Estacionaridade");
+		button1 = new JRadioButton("Trend Result");
 		button1.setSelected(true);
 		//button2 = new JRadioButton("Excel - Máximos");
-		button2 = new JRadioButton("Tabela bsen e pvalue");
+		button2 = new JRadioButton("bsen and pvalue Table");
 		
 		//button3 = new JRadioButton("DAT - Original");
 		//button4 = new JRadioButton("Excel - Original");
@@ -167,9 +167,9 @@ private static final long serialVersionUID = 1L;
     	this.panelButtons.setLayout(null);
 		this.add(this.panelButtons);
 		    	
-    	this.btnExecute = new JButton("Exportar");
+    	this.btnExecute = new JButton("Export");
     	String nomeEstat=this.simulationData.getTipoEstatisticaSelecionadaEstacionaridade();
-    	this.btnExecute.setToolTipText("Abrir um arquivo selecionado que será utilizado para obter série de "+ nomeEstat);
+    	this.btnExecute.setToolTipText("Open a selected file that will be used to obtain series of "+ nomeEstat);
     	this.btnExecute.setBounds(10, 10, 90, 25);
     	this.btnExecute.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -219,7 +219,7 @@ public void exportarDados()  {
 		
 		if(this.button1.isSelected()){
 		
-			executarSalvarExcel boot= new executarSalvarExcel(this.simulationData,this.pnt);
+			executeSaveXLSX_MK boot= new executeSaveXLSX_MK(this.simulationData,this.pnt);
 		    boot.addPropertyChangeListener(this.pnt);
 			boot.execute();
 			
@@ -260,6 +260,230 @@ private void SolicitarArquivosAoUsuário(JFileChooser chooser)  {
 
 
 }
+
+
+
+
+
+class executeSaveXLSX_MK extends SwingWorker<Void, String> {
+
+	private SimulationDataExtremos simulationData;
+    private PanelTrendDetectionStreamflowBrazil pnt;    
+    private ProgressMonitor progressMonitor;
+    private JTextArea taskOutput;
+    private JFileChooser chooser;
+	private ExtensionFileFilter filter;
+	
+	
+	public executeSaveXLSX_MK (SimulationDataExtremos simulationData,PanelTrendDetectionStreamflowBrazil pnt){
+		
+		 this.simulationData=simulationData;
+		 this.pnt=pnt;
+		 
+	}
+	
+	
+	
+	
+	@Override
+	protected Void doInBackground() throws Exception {
+		
+		String dir = null;
+		String filename = null;
+		//if(dir == null){
+			Messages.informMsg("Indique o nome do arquivo de resultados .xlsx");
+			int returnVal = this.pnt.getChooser().showOpenDialog(this.pnt);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+			dir = this.pnt.getChooser().getCurrentDirectory().getAbsolutePath() + "\\";
+			filename = this.pnt.getChooser().getSelectedFile().getName();
+			}
+			
+			//this.simulationData.setFilenameBD(filename);
+			this.simulationData.setDataDirBD(dir);
+			
+			String[] columnNames = new String[11];		
+			columnNames[0] = "Gauge Code";
+			columnNames[1] = "Trend Test";
+			columnNames[2] = "Test Statistics";
+			columnNames[3] = "Pvalue (%)";
+			columnNames[4] = "Critical Value Method";
+			columnNames[5] = "Critical Value";
+			columnNames[6] = "Result";
+			columnNames[7] = "Description Result";
+			columnNames[8] = "Trend";
+			columnNames[9] = "Year Shift";
+			columnNames[10] = "Mean";
+						
+			int ntestes=1;
+						
+			String [] nometesteExtenso=new String [ntestes];
+			nometesteExtenso[0]="Mann-Kendall";
+			/*nometesteExtenso[1]="Spearman’s Rho";
+			nometesteExtenso[2]="Linear Regression";
+			nometesteExtenso[3]="Teste T";
+			nometesteExtenso[4]="Distribution CUSUM";
+			nometesteExtenso[5]="Cumulative Deviation";
+			nometesteExtenso[6]="Worsley Lik. Ratio";
+			nometesteExtenso[7]="Rank-Sum (Mann-Whitney)";
+			nometesteExtenso[8]="Teste F";
+			nometesteExtenso[9]="Median Crossing";
+			nometesteExtenso[10]="Turning Points";
+			nometesteExtenso[11]="Rank Difference";
+			nometesteExtenso[12]="Autocorrelation";
+			nometesteExtenso[13]="Wald-Wolfowitz";*/
+						
+			String [] nometeste=new String [ntestes];
+			nometeste[0]="MK";
+			/*nometeste[1]="SR";
+			nometeste[2]="LR";
+			nometeste[3]="TT";
+			nometeste[4]="DC";
+			nometeste[5]="CD";
+			nometeste[6]="WR";
+			nometeste[7]="MW";
+			nometeste[8]="TF";
+			nometeste[9]="MC";
+			nometeste[10]="TP";
+			nometeste[11]="RD";
+			nometeste[12]="AC";
+			nometeste[13]="WW";*/
+			
+			
+    	    String nomearq=dir+filename+".xlsx";
+    	    Workbook wb = new SXSSFWorkbook(100);
+    	   
+    	    
+    	    setProgress(0);
+			String textointerface= "Iniciando o Calculo do Resumo dos Resultados das Estações  ";
+		    publish(textointerface);
+			int progress = 0;
+	        setProgress(0);
+	        int iestfim=0;
+	        Sheet sh = wb.createSheet("MK Trend Result");
+	        Row rowHEAD = sh.createRow(0);
+	        for(int i1=0;i1<columnNames.length;i1++) {
+	        	Cell cell = rowHEAD.createCell(i1);
+	        	cell.setCellValue(columnNames[i1]);
+	        }
+	        
+	        int igauge=1;
+    	    for(int i=0;i<this.simulationData.getVariaveisHidr().size();i++){
+    	   	    if(this.simulationData.getVariaveisHidr().get(i).isSelecionada() && this.simulationData.getVariaveisHidr().get(i).isAtendeRestricaoTamMin())	{		
+    	   	    	
+    	   	   	    String codigo=String.valueOf(this.simulationData.getVariaveisHidr().get(i).getInvhidro().getEstacao_codigo());
+    		   	    ArrayList<ResultEstacionaridade> resultestacionaridade =new ArrayList<ResultEstacionaridade>();
+    		   	    resultestacionaridade = this.simulationData.getVariaveisHidr().get(i).getResultestacionaridade();
+    		   	    VariavelHidrologica vhid =this.simulationData.getVariaveisHidr().get(i);
+    	   	   	    
+    	   	   	    	   	   	    
+    	   	   	    
+    	   	    int nlinhastr=ntestes+1;
+    	   	    int ncolstr=columnNames.length;
+    			
+    			
+    			Object[][] result =this.pnt.setDadosResEstac_MK(resultestacionaridade);
+    			result[0][0]=codigo;
+    			//for(int rownum = 0; rownum <nlinhastr; rownum++){
+    	            Row row = sh.createRow(igauge);
+    	            for(int cellnum = 0; cellnum < ncolstr; cellnum++){
+    	                Cell cell = row.createCell(cellnum);
+    	                String address = new CellReference(cell).formatAsString();
+    	                
+    	                if(igauge !=0){
+    	                      
+    	                	if(cellnum == 2 || cellnum == 3 || cellnum == 5 || cellnum == 9){
+    	                		String teste=String.valueOf(result[0][cellnum]);
+    	                		if(teste != ""){
+    	                			double val=Double.parseDouble(teste);
+        	                		cell.setCellValue(val);
+    	                		}else{
+    	                			
+    	                		}
+    	                		
+    	                	}else{
+    	                		cell.setCellValue(String.valueOf(result[0][cellnum]));
+    	                	}
+    	                
+	    	                
+    	                }else{
+    	                	cell.setCellValue(columnNames[cellnum]);	
+    	                }
+    	                
+    	            }
+
+    	       // }
+    			
+    	         igauge++;
+    			iestfim++;
+    	   	    }
+    	    
+    	    
+    	   	 double progress2 = ((i+1)*1.0/(this.simulationData.getVariaveisHidr().size()*1.0))*100;
+		     int ngauges= this.simulationData.getVariaveisHidr().size();
+    	   	 progress=(int) progress2;
+		      setProgress(Math.min(progress, 100));
+		      textointerface= "Aguarde..executando  o calculo da estação  "+(i+1)+"/"+ngauges+"";
+		      publish(textointerface);
+			  System.out.println(textointerface);
+    	   	    
+    	   	    
+    	   	    
+    	    }
+    	    
+    	    FileOutputStream out = null;
+    		try {
+    			out = new FileOutputStream(nomearq);
+    		} catch (FileNotFoundException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+            try {
+    			wb.write(out);
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+            try {
+    			out.close();
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+    	    
+            textointerface= "arquivo excel dos resultados da(s) "+iestfim+" estação(ões) efetuado com sucesso";
+            publish(textointerface);
+    	    // keep 100 rows in memory, exceeding rows will be flushed to disk
+	        
+            //Messages.informMsg("Arquivo excel criado com sucesso");
+			
+		    
+		return null;
+		
+	}
+
+
+	protected void process(List<String> text) {
+	    
+    	 //this.pnt.lblAguardeThread.setText(text.get(0));
+    
+     }
+    
+     protected void done() {
+     
+    	 Messages.informMsg("XLSX file exported successfully");
+     
+     } 
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

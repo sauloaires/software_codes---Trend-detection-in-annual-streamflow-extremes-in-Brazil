@@ -71,12 +71,12 @@ private static final long serialVersionUID = 1L;
   
   private void createPane() {
       this.chooser = new JFileChooser(new File("."));
-      this.filter = new ExtensionFileFilter("dat", "Arquivos de dados hidrológicos (*.dat)");
+      this.filter = new ExtensionFileFilter("dat", "StreamFlow data files (*.dat)");
     this.chooser.setFileFilter(this.filter);
     
     
     this.chooser_xlsx = new JFileChooser(new File("."));
-      this.filter_xlsx = new ExtensionFileFilter("xlsx", "Arquivos de dados hidrológicos (*.xlsx)");
+      this.filter_xlsx = new ExtensionFileFilter("xlsx", "StreamFlow data files (*.xlsx)");
     this.chooser_xlsx.setFileFilter(this.filter_xlsx);
     
   }
@@ -134,7 +134,7 @@ private static final long serialVersionUID = 1L;
     this.add(this.panelButtons);
           
       this.btnExecute = new JButton("Open");
-      this.btnExecute.setToolTipText("Abrir um arquivo selecionado que será utilizado para obter série de máximos");
+      this.btnExecute.setToolTipText("Open a selected file that will be used to trend analysis");
       this.btnExecute.setBounds(10, 10, 90, 25);
       this.btnExecute.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
@@ -144,7 +144,7 @@ private static final long serialVersionUID = 1L;
       this.panelButtons.add(this.btnExecute, JLayeredPane.DEFAULT_LAYER);
       
       this.btnCancel = new JButton("Add");
-      this.btnCancel.setToolTipText("Adicionar ao estudo as séries do arquivo selecionado");
+      this.btnCancel.setToolTipText("Add the series from the selected file to the study");
       this.btnCancel.setBounds(10, 40, 90, 25);
       this.btnCancel.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {

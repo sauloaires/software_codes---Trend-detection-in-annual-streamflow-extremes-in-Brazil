@@ -37,7 +37,7 @@ public class FrameResultadoEstacionaridadeAllGauges extends JFrame {
 	
 
 	private void createMainFrame() {
-		this.setBounds(100, 100, 1000, 400);
+		this.setBounds(50, 50, 1000, 400);
 		this.setLayout(new BorderLayout());
 		this.setResizable(true);
 		

@@ -31,7 +31,7 @@ public Map<String, Map<String,ResultEstacionaridade>> executarTestes(){
 		
 		String tiposerie=null;
 	    String nometeste=null;
-	    double nivelsignificancia=5.0;
+	    double nivelsignificancia=simulationData.getNivelSignificancia();
 	    String [] nometeste2=pegarNomeTesteSigla();
 	 	String textointerface= "Iniciando cálculo ....";
 	    int progress = 0;
@@ -65,8 +65,9 @@ public Map<String, Map<String,ResultEstacionaridade>> executarTestes(){
 			    double CF=1;
 		    	boolean autoCorrelacao=this.simulationData.isConsiderarAutoCorrelacao();
 		    	//String nomeAbordagemAC="TFPWcunbPW";
-		    	String nomeAbordagemAC="TFPWcunbPW";//MK para nao considerar nenhuma abordagem
+		    	//String nomeAbordagemAC="TFPWcunbPW";//MK para nao considerar nenhuma abordagem
 		    	if(autoCorrelacao){
+		    		String nomeAbordagemAC=this.getApproachName();
 		    		SelecionarAbordagemCorrelacaoSerial selAbordagem=new SelecionarAbordagemCorrelacaoSerial();
 		    		selAbordagem.executarSerieMapa(nomeAbordagemAC, serieMapaOriginal);
 		    		serieMapaTFPW=selAbordagem.getSerieMapaFinal();
@@ -222,6 +223,27 @@ public ResultEstacionaridade executarMK(MannKendallTest teste,String tiposerie,
 	
 	return resultest;
 	
+	
+}
+
+
+public String getApproachName() {
+	
+	String nomeAbordagemAC="";
+	
+	if(simulationData.isFazerPW()) {
+		nomeAbordagemAC="PW";
+	}else if(simulationData.isFazerTFPW()) {
+		nomeAbordagemAC="TFPW";
+	}else if(simulationData.isFazerMTFPW()) {
+		nomeAbordagemAC="TFPWcunbPW";
+	}else if(simulationData.isFazerVCPW()) {
+		nomeAbordagemAC="VCPW";
+	}else if(simulationData.isFazerVC()) {
+		nomeAbordagemAC="VC_CF1";
+	}
+	
+	return nomeAbordagemAC;
 	
 }
 

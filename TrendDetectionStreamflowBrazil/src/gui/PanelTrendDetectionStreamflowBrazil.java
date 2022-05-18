@@ -14,6 +14,7 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
+import org.geotools.feature.SchemaException;
 import org.jfree.ui.RefineryUtilities;
 
 
@@ -47,11 +49,13 @@ import com.vividsolutions.jump.workbench.plugin.PlugInContext;
 import gui.tableResultTrendTeste.FrameResultadoEstacionaridade;
 import gui.tableResultTrendTeste.FrameResultadoEstacionaridadeAllGauges;
 import io.DesenharShapesResultadoDetalhado;
+import io.DesenharShapesResultadoDetalhadoGeotools;
 import io.ExportarResultadoTabelaResumoBsen;
 import io.ExtensionFileFilter;
 import io.MAR_ImportDataDAO;
 import io.PanelEscolherArquivoExcelExportarResultado;
 import io.StationaritySummary;
+import io.graph.PanelEscolherGrafico;
 import tests.ExecutarTestesEstacionaridadeMapaResultsAllCorrelTemporal;
 import types.InventarioHidrologico;
 import types.ResultEstacionaridade;
@@ -67,7 +71,8 @@ PropertyChangeListener{
 private static final long serialVersionUID = 1L;
 	
 	private JFileChooser chooser;
-	
+	 private JFileChooser chooser_xlsx;
+	  private ExtensionFileFilter filter_xlsx;
 	public JTextField getTxtDiretorioArquivo() {
 		return txtDiretorioArquivo;
 	}
@@ -84,6 +89,7 @@ private static final long serialVersionUID = 1L;
 	private JPanel panelButtons;
 	
 	private JButton btnExecute;
+	
 	private JButton btnExecuteSIM2;
 	private JButton btnCancel;
 	
@@ -204,6 +210,11 @@ private static final long serialVersionUID = 1L;
 		 private JButton btnSaveXLSXProgress;
 		 private JButton btnSaveSHP;
 		 
+		 
+		 private JPanel panelRecordLength;
+		 private JTextField txtRecordLength;
+		 private JLabel lblRecordLength;
+		 private JButton  btnGraphTS;
 	public PanelTabelaIDadosImportados getPanelDadosTable() {
 		return panelDadosTable;
 	}
@@ -254,7 +265,7 @@ private static final long serialVersionUID = 1L;
 		this.setarnomescheckbox();
 		//this.formatPanelData();
 		this.formatPanelButton();
-		this.formatPanelSetarDirTemplate();
+		//this.formatPanelSetarDirTemplate();
 		this.formatPanelSetarDirOutput();
 		this.formatPanelTableDadosFluviometricas();
 		this.formatPanelEstacionaridadeTendencia();
@@ -262,6 +273,7 @@ private static final long serialVersionUID = 1L;
 		this.formatpanelNivelSignificancia();
 		this.formatPanelEstacionaridadeTendenciaAutoCorrelacao();
 		this.formatPanelFDR();
+		this.formatPanelRecordLength();
 	
 	} 
 	
@@ -334,11 +346,14 @@ private void formatPanelSetarDirOutput() {
     	this.simulationData.setDirOutputExtremosUNB(dirOutput);
     	this.btnDiretorioArquivoOutput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
 				JFileChooser fc = new JFileChooser();  
+				/*JFileChooser fc = new JFileChooser();  
           	     // restringe a amostra a diretorios apenas  
                 fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);  
-                 int res = fc.showOpenDialog(null);  
+                // int res = fc.showOpenDialog(null);  
+                JFrame frm=new JFrame();
+                 int res = fc.showOpenDialog(frm);  */
+				int res=selecionarDiretorio(fc);
                 if(res == JFileChooser.APPROVE_OPTION){ 
             	 File diretorio = fc.getSelectedFile();  
                  //JOptionPane.showMessageDialog(null, "Voce escolheu o diretório: " + diretorio.getName()); 
@@ -355,7 +370,13 @@ private void formatPanelSetarDirOutput() {
     	
 }
 
-
+    
+    private int selecionarDiretorio(JFileChooser fc) {
+    	    	
+ 	    fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);  
+        int res = fc.showOpenDialog(this);
+		return res;  
+    }
 	private void formatPanelSetarDirTemplate() {
 		
 		
@@ -503,6 +524,9 @@ private void formatPanelSetarDirOutput() {
 			this.checkEstacionaridadeTendencia[1].setBounds(10, 50, 140, 25);
 			this.checkEstacionaridadeTendencia[2].setBounds(10, 80, 140, 25);
 			//this.checkEstacionaridadeTendencia[3].setBounds(10, 110, 140, 25);
+			this.checkEstacionaridadeTendencia[1].setEnabled(false);
+			this.checkEstacionaridadeTendencia[2].setEnabled(false);
+			this.checkEstacionaridadeTendencia[0].setSelected(true);
 			
 		
 		}
@@ -627,12 +651,12 @@ private void formatPanelSetarDirOutput() {
 			
 			String[] items = {"5 %", "10 %", "1 %"};
 			this.cboNivelSignificanciaTeorico = new JComboBox(items);
-	    	this.cboNivelSignificanciaTeorico.setBounds(50, 35, 60, 20);
+	    	this.cboNivelSignificanciaTeorico.setBounds(50, 25, 60, 20);
 	    	this.panelNivelSignificanciaTeorico.add(this.cboNivelSignificanciaTeorico);
 	    	
 	    	
 	    	this.lblNivelSignificanciaTeorico = new JLabel("Alpha:");
-	    	this.lblNivelSignificanciaTeorico.setBounds(10, 40, 40, 15);
+	    	this.lblNivelSignificanciaTeorico.setBounds(10, 30, 40, 15);
 	    	this.panelNivelSignificanciaTeorico.add(this.lblNivelSignificanciaTeorico);
 	    	
 	    	
@@ -644,7 +668,7 @@ private void formatPanelSetarDirOutput() {
 	            public void focusLost(FocusEvent e){
 	            	int ns = cboNivelSignificanciaTeorico.getSelectedIndex();
 	            	
-	            	if(ns == 0){
+	            	if(ns == 1){
 	            		simulationData.setNivelSignificancia(10);	
 	            	}else if(ns == 2){
 	            		simulationData.setNivelSignificancia(1);
@@ -662,6 +686,28 @@ private void formatPanelSetarDirOutput() {
 		}
 	 
 	 
+	
+	 public void formatPanelRecordLength (){
+			
+			
+			this.panelRecordLength=new JPanel();
+			this.panelRecordLength.setBackground(Color.LIGHT_GRAY);
+			this.panelRecordLength.setBorder(BorderFactory.createTitledBorder("Record Length"));
+	    	this.panelRecordLength.setBounds(540, 70, 120, 60);
+			this.panelRecordLength.setLayout(null);
+			this.formatPanelData.add(this.panelRecordLength);
+			
+			this.txtRecordLength = new JTextField();
+			this.txtRecordLength.setBounds(60, 25, 50, 25);
+			this.txtRecordLength.setEnabled(true);
+			this.panelRecordLength.add(this.txtRecordLength);
+			this.txtRecordLength.setText("30");	
+			
+			this.lblRecordLength = new JLabel("N = ");
+	    	this.lblRecordLength.setBounds(10, 30, 30, 15);
+	    	this.panelRecordLength.add(this.lblRecordLength);
+	    	
+	 }
 	 
 	 
 	 private void formatPanelFDR() {
@@ -730,7 +776,7 @@ private void formatPanelSetarDirOutput() {
 				public void itemStateChanged(ItemEvent evt){  
 				if(checkSelFDR.isSelected() == true){
 					button1FDR.setEnabled(true);
-					button2FDR.setEnabled(true);
+					button2FDR.setEnabled(false);
 					simulationData.setFazerFDR(true);				
 				 }else{
 					 button1FDR.setEnabled(false);
@@ -835,7 +881,7 @@ private void formatPanelSetarDirOutput() {
 			
 			this.button3AutoCorrel.addItemListener(new ItemListener(){  
 				public void itemStateChanged(ItemEvent evt){  
-				 if(button2AutoCorrel.isSelected() == true){
+				 if(button3AutoCorrel.isSelected() == true){
 					 simulationData.setFazerPW(button1AutoCorrel.isSelected());
 					 simulationData.setFazerTFPW(button2AutoCorrel.isSelected());
 					 simulationData.setFazerMTFPW(button3AutoCorrel.isSelected());
@@ -847,7 +893,7 @@ private void formatPanelSetarDirOutput() {
 			
 			this.button4AutoCorrel.addItemListener(new ItemListener(){  
 				public void itemStateChanged(ItemEvent evt){  
-				 if(button2AutoCorrel.isSelected() == true){
+				 if(button4AutoCorrel.isSelected() == true){
 					 simulationData.setFazerPW(button1AutoCorrel.isSelected());
 					 simulationData.setFazerTFPW(button2AutoCorrel.isSelected());
 					 simulationData.setFazerMTFPW(button3AutoCorrel.isSelected());
@@ -860,7 +906,7 @@ private void formatPanelSetarDirOutput() {
 			
 			this.button5AutoCorrel.addItemListener(new ItemListener(){  
 				public void itemStateChanged(ItemEvent evt){  
-				 if(button2AutoCorrel.isSelected() == true){
+				 if(button5AutoCorrel.isSelected() == true){
 					 simulationData.setFazerPW(button1AutoCorrel.isSelected());
 					 simulationData.setFazerTFPW(button2AutoCorrel.isSelected());
 					 simulationData.setFazerMTFPW(button3AutoCorrel.isSelected());
@@ -934,7 +980,7 @@ private void formatPanelSetarDirOutput() {
 			this.formatPanelData.add(this.panelButtons);
 			
 	    	this.btnImportData = new JButton("Import");
-	    	this.btnImportData.setToolTipText("Abrir lista de postos fluviométricos");
+	    	this.btnImportData.setToolTipText("Import streamflow time series");
 	    	this.btnImportData.setBounds(10, 10, 90, 25);
 	    	this.btnImportData.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
@@ -944,9 +990,21 @@ private void formatPanelSetarDirOutput() {
 	    	this.panelButtons.add(this.btnImportData, JLayeredPane.DEFAULT_LAYER);
 	    	
 	    	
+	    	this.btnGraphTS = new JButton("Graph");
+	    	this.btnGraphTS.setToolTipText("Create a graph with the annual series for each gauge");
+	    	this.btnGraphTS.setBounds(10, 40, 90, 25);
+	    	this.btnGraphTS.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					buttonAction(btnGraphTS);
+				}
+			});
+	    	this.panelButtons.add(this.btnGraphTS, JLayeredPane.DEFAULT_LAYER);
+	    	
+	    	
+	    	
 	    	this.btnExecute = new JButton("Execute");
 	    	this.btnExecute.setToolTipText("Execute trend tests");
-	    	this.btnExecute.setBounds(10, 40, 90, 25);
+	    	this.btnExecute.setBounds(10, 70, 90, 25);
 	    	this.btnExecute.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					buttonAction(btnExecute);
@@ -955,8 +1013,8 @@ private void formatPanelSetarDirOutput() {
 	    	this.panelButtons.add(this.btnExecute, JLayeredPane.DEFAULT_LAYER);
 	    	
 	    	this.btnResultTable = new JButton("Restbl");
-	    	this.btnResultTable.setToolTipText("Execute trend tests");
-	    	this.btnResultTable.setBounds(10, 70, 90, 25);
+	    	this.btnResultTable.setToolTipText("Result in table format for each gauge");
+	    	this.btnResultTable.setBounds(10, 100, 90, 25);
 	    	this.btnResultTable.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					buttonAction(btnResultTable);
@@ -965,8 +1023,8 @@ private void formatPanelSetarDirOutput() {
 	    	this.panelButtons.add(this.btnResultTable, JLayeredPane.DEFAULT_LAYER);
 	    	
 	    	this.btnSummaryResult = new JButton("Summary");
-	    	this.btnSummaryResult.setToolTipText("Execute trend tests");
-	    	this.btnSummaryResult.setBounds(10, 100, 90, 25);
+	    	this.btnSummaryResult.setToolTipText("Summary result of trend tests");
+	    	this.btnSummaryResult.setBounds(10, 130, 90, 25);
 	    	this.btnSummaryResult.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					buttonAction(btnSummaryResult);
@@ -975,8 +1033,8 @@ private void formatPanelSetarDirOutput() {
 	    	this.panelButtons.add(this.btnSummaryResult, JLayeredPane.DEFAULT_LAYER);
 	    	
 	    	this.btnSaveXLSXProgress = new JButton("XLSX");
-	    	this.btnSaveXLSXProgress.setToolTipText("Execute trend tests");
-	    	this.btnSaveXLSXProgress.setBounds(10, 130, 90, 25);
+	    	this.btnSaveXLSXProgress.setToolTipText("Result in XLSX format for each gauge");
+	    	this.btnSaveXLSXProgress.setBounds(10, 160, 90, 25);
 	    	this.btnSaveXLSXProgress.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					buttonAction(btnSaveXLSXProgress);
@@ -985,8 +1043,8 @@ private void formatPanelSetarDirOutput() {
 	    	this.panelButtons.add(this.btnSaveXLSXProgress, JLayeredPane.DEFAULT_LAYER);
 	    	
 	    	this.btnSaveSHP = new JButton("SHP");
-	    	this.btnSaveSHP.setToolTipText("Execute trend tests");
-	    	this.btnSaveSHP.setBounds(10, 160, 90, 25);
+	    	this.btnSaveSHP.setToolTipText("Export Result in shapefile format");
+	    	this.btnSaveSHP.setBounds(10, 190, 90, 25);
 	    	this.btnSaveSHP.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					buttonAction(btnSaveSHP);
@@ -1011,6 +1069,9 @@ private void formatPanelSetarDirOutput() {
 		
 		this.importDataGauges();
 				
+		}else if(jb.equals(this.btnGraphTS)){
+			
+			this.executeGraphTimeSeries();
 		}else if(jb.equals(this.btnExecute)){
 			
 			this.executeTrendTest();
@@ -1031,11 +1092,28 @@ private void formatPanelSetarDirOutput() {
 	
 	
 	
+	private void executeGraphTimeSeries() {
+		// TODO Auto-generated method stub
+		final PanelEscolherGrafico panelGraf = new PanelEscolherGrafico(this.simulationData,this);
+		panelGraf.setVisible(true);
+		panelGraf.pack();
+		RefineryUtilities.centerFrameOnScreen(panelGraf);
+	}
+
+
+
 	private void saveSHP() {
 		// TODO Auto-generated method stub
-		DesenharShapesResultadoDetalhado desenharShapesResultadoDetalhado=new DesenharShapesResultadoDetalhado(this.simulationData,this);
-		String dirShape="C:\\Users\\saulo.souza\\eclipse-workspace\\TrendDetectionStreamflowBrazil\\test";
-		desenharShapesResultadoDetalhado.execute("MK", dirShape);
+		DesenharShapesResultadoDetalhadoGeotools desenharShapesResultadoDetalhado=new DesenharShapesResultadoDetalhadoGeotools(this.simulationData,this);
+		String dirShape=this.txtDiretorioArquivoOutput.getText();
+		try {
+			desenharShapesResultadoDetalhado.execute("MK", dirShape);
+		} catch (SchemaException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Messages.informMsg("Shapefile exported successfully");
 	}
 
 
@@ -1078,10 +1156,16 @@ private void formatPanelSetarDirOutput() {
 	
 	public void executeTrendTest()  {
 		
-		this.simulationData.setDirTemplateExtremosUNB(this.txtDiretorioArquivo.getText());
+		//this.simulationData.setDirTemplateExtremosUNB(this.txtDiretorioArquivo.getText());
 		this.simulationData.setDirOutputExtremosUNB(this.txtDiretorioArquivoOutput.getText());
-		String dirTemplate=this.simulationData.getDirTemplateExtremosUNB();
-		
+		//String dirTemplate=this.simulationData.getDirTemplateExtremosUNB();
+		this.simulationData.setTamMinSerietotEstacionaridade(Integer.parseInt(this.txtRecordLength.getText()));
+		//this.simulationData.setCodEstatisticaSelecionadaEstacionaridade(1);
+		//this.simulationData.setAnoIniSubConjunto(-99999);
+		//this.simulationData.setAnoFimSubConjunto(-99999);
+		//this.simulationData.setConsiderarAutoCorrelacao(true);
+		//this.simulationData.setFazerFDR(true);
+		//this.simulationData.setFazerFDRClassico(true);
 		ExecutarTestesEstacionaridadeMapaResultsAllCorrelTemporal executarTestes = new ExecutarTestesEstacionaridadeMapaResultsAllCorrelTemporal(this.simulationData);
 		Map<String, Map<String,ResultEstacionaridade>> resultEstacionaridadeTipo2=executarTestes.executarTestes();
 		
@@ -1098,7 +1182,9 @@ private void formatPanelSetarDirOutput() {
 		//final FrameResultadoEstacionaridade frameresultest = new FrameResultadoEstacionaridade(this.simulationData,this);
 		
 		final FrameResultadoEstacionaridadeAllGauges frameresultest = new FrameResultadoEstacionaridadeAllGauges(this.simulationData,this);
-		
+		frameresultest.setVisible(true);
+		frameresultest.pack();
+		RefineryUtilities.centerFrameOnScreen(frameresultest);
 	}
 
 	
@@ -1356,6 +1442,155 @@ private void formatPanelSetarDirOutput() {
 	}
 
 
+	
+	public Object[][] setDadosResEstac_MK(ArrayList<ResultEstacionaridade> resultestacionaridade) {
+		int ntestes=1;
+		String [] nometeste=new String [ntestes];
+		
+		
+		nometeste[0]="MK";
+		/*nometeste[1]="SR";
+		nometeste[2]="LR";
+		nometeste[3]="TT";
+		nometeste[4]="DC";
+		nometeste[5]="CD";
+		nometeste[6]="WR";
+		nometeste[7]="MW";
+		nometeste[8]="TF";
+		nometeste[9]="MC";
+		nometeste[10]="TP";
+		nometeste[11]="RD";
+		nometeste[12]="AC";
+		nometeste[13]="WW";*/
+		
+		String [] nometesteExtenso=new String [ntestes];
+		nometesteExtenso[0]="Mann-Kendall";
+		/*nometesteExtenso[1]="Spearman’s Rho";
+		nometesteExtenso[2]="Linear Regression";
+		nometesteExtenso[3]="Teste T";
+		nometesteExtenso[4]="Distribution CUSUM";
+		nometesteExtenso[5]="Cumulative Deviation";
+		nometesteExtenso[6]="Worsley Lik. Ratio";
+		nometesteExtenso[7]="Rank-Sum (Mann-Whitney)";
+		nometesteExtenso[8]="Teste F";
+		nometesteExtenso[9]="Median Crossing";
+		nometesteExtenso[10]="Turning Points";
+		nometesteExtenso[11]="Rank Difference";
+		nometesteExtenso[12]="Autocorrelation";
+		nometesteExtenso[13]="Wald-Wolfowitz";*/
+		
+		Object[][] result = new Object[ntestes][11];
+		
+		for (int i = 0; i < ntestes; i++){
+			if(i<3){
+			result[i][0]="Mudança gradual (Tendência)";
+			}else if(i>=3 && i<7){
+			result[i][0]="Mudança brusca (Média)";
+			}else if(i==7){
+			result[i][0]="Mudança brusca (Mediana)";
+			}else if(i==8){
+			result[i][0]="Mudança brusca (Variância)";	
+			}else{
+			result[i][0]="Teste de Independência";	
+			}
+			
+			DecimalFormatSymbols dc = new DecimalFormatSymbols();
+			dc.setDecimalSeparator('.');
+			String strange = "0.00";
+			DecimalFormat myFormatter = new DecimalFormat(strange, dc);		
+				for(int j=0;j<resultestacionaridade.size();j++){
+					result[i][1]=nometesteExtenso[i];
+					if(resultestacionaridade.get(j).getNometeste().equals(nometeste[i])){
+						
+						System.out.println(resultestacionaridade.get(j).getEstatteste());
+						Double valteste=resultestacionaridade.get(j).getEstatteste();
+						
+						result[i][2]=myFormatter.format(resultestacionaridade.get(j).getEstatteste());
+						result[i][3]=myFormatter.format(resultestacionaridade.get(j).getPvalue());
+						result[i][5]=myFormatter.format(resultestacionaridade.get(j).getValorcriticoteste());
+						
+						result[i][4]=resultestacionaridade.get(j).getMetodoObterValCritico();
+						result[i][6]=resultestacionaridade.get(j).getResultadoteste();
+						result[i][7]=resultestacionaridade.get(j).getResultadoDescritivoTeste();
+						String campo2="";
+						if(valteste.isNaN()){
+							campo2="-99999.0";
+						}else{
+						campo2=myFormatter.format(resultestacionaridade.get(j).getEstatteste());
+						}
+						
+						
+					
+						
+						String campo3=myFormatter.format(resultestacionaridade.get(j).getPvalue());
+						String campo5=myFormatter.format(resultestacionaridade.get(j).getValorcriticoteste());
+						
+						result[i][2]=Double.parseDouble(campo2);
+						result[i][3]=Double.parseDouble(campo3);
+						result[i][5]=Double.parseDouble(campo5);
+						
+						
+						if(i<3){
+							result[i][8]=resultestacionaridade.get(j).getSentidoTendencia();
+							result[i][9]=-99999.0;
+							result[i][10]="-99999.0";
+							
+							}else if(i>=3 && i<9){
+							
+								result[i][8]="-99999.0";
+								String campo9=String.valueOf(resultestacionaridade.get(j).getAnoMudanca());
+							result[i][9]=Double.parseDouble(campo9);
+							result[i][10]=resultestacionaridade.get(j).getSentidoMediaRecente();
+							}else {
+								result[i][8]="-99999.0";
+								result[i][9]=-99999.0;
+								result[i][10]="-99999.0";
+							
+							}
+					
+						break;
+					}else{
+						
+						result[i][2]=-99999.0;
+						result[i][3]=-99999.0;
+						result[i][5]=-99999.0;
+						
+						result[i][4]="-99999.0";
+						result[i][6]="-99999.0";
+						result[i][7]="-99999.0";
+						
+						if(i<3){
+							result[i][8]="-99999.0";
+							result[i][9]=-99999.0;
+							result[i][10]="-99999.0";
+							
+							}else if(i>=3 && i<9){
+							
+							result[i][8]="-99999.0";
+							result[i][9]=-99999.0;
+							result[i][10]="-99999.0";
+							}else {
+								result[i][8]="-99999.0";
+								result[i][9]=-99999.0;
+								result[i][10]="-99999.0";
+							
+							}
+						
+					}
+						
+				}
+				
+			
+			
+			
+			//2,3,5,9
+			
+		}
+		
+			
+		return result;
+	}
+	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		// TODO Auto-generated method stub
@@ -1372,6 +1607,30 @@ private void formatPanelSetarDirOutput() {
 
 	public void setChooser(JFileChooser chooser) {
 		this.chooser = chooser;
+	}
+
+
+
+	public JFileChooser getChooser_xlsx() {
+		return chooser_xlsx;
+	}
+
+
+
+	public void setChooser_xlsx(JFileChooser chooser_xlsx) {
+		this.chooser_xlsx = chooser_xlsx;
+	}
+
+
+
+	public ExtensionFileFilter getFilter_xlsx() {
+		return filter_xlsx;
+	}
+
+
+
+	public void setFilter_xlsx(ExtensionFileFilter filter_xlsx) {
+		this.filter_xlsx = filter_xlsx;
 	}
 	
 	
