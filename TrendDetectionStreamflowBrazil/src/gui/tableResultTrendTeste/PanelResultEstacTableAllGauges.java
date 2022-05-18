@@ -18,6 +18,7 @@ import javax.swing.table.TableColumn;
 
 import types.ResultEstacionaridade;
 import types.SimulationDataExtremos;
+import util.ExcelAdapter;
 
 public class PanelResultEstacTableAllGauges extends JPanel{
 
@@ -71,7 +72,7 @@ public class PanelResultEstacTableAllGauges extends JPanel{
 		Object[][] data = this.setDailyData();
 		
 		this.tblDailyData = new JTable(data, columnNames);
-		
+		ExcelAdapter exetbl=new ExcelAdapter(this.tblDailyData);
        for(int i = 0; i < data.length; i++){
 			for(int j = 0; j < data[i].length; j++ ){
 			    	if(data[i][j] != null){

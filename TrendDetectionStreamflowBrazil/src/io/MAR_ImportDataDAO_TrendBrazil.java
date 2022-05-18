@@ -475,6 +475,6 @@ public class MAR_ImportDataDAO_TrendBrazil {
 	            //this.pnd.addDischargeGaugesToTable();
 	            this.png.lblAguardeThread.setText("Leitura dos dados das "+this.nseries+" estações efetuado com sucesso");
 	            }*/
-	      Messages.informMsg("Leitura efetuada com sucesso");
+	      Messages.informMsg("Import successfully");
 	          } 
 }
